@@ -1,21 +1,17 @@
 # Installation
 
-## 1. Create VEnv
-``` bash
-python3 -m venv .venv
-source ./.venv/bin/activate
-```
-
-## 2. Install
+## 1. Install & Create VEnv
 ``` bash
 git clone https://github.com/i4ego/dostool.git 
 cd dostool
+python3 -m venv .venv
+source ./.venv/bin/activate
 python3 -m pip install --upgrade -r req.txt
 ```
 
-## 3. Build
+## 2. Build
 ``` bash
-python3 -m --upgrade pip install pyinstaller
+python3 -m pip --upgrade install pyinstaller
 pyinstaller --onefile --console --clean --noconfirm \
  --distpath ./ --name dostool dostool.py
 rm dostool.spec
