@@ -10,12 +10,12 @@ source ./.venv/bin/activate
 ``` bash
 git clone https://github.com/i4ego/dostool.git 
 cd dostool
-python3 -m pip install -r req.txt
+python3 -m pip install --upgrade -r req.txt
 ```
 
 ## 3. Build
 ``` bash
-python3 -m pip install pyinstaller
+python3 -m --upgrade pip install pyinstaller
 pyinstaller --onefile --console --clean --noconfirm \
  --distpath ./ --name dostool dostool.py
 rm dostool.spec
