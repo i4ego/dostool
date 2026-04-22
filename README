@@ -1,0 +1,37 @@
+# Installation
+
+## 1. Create VEnv
+``` bash
+python3 -m venv .venv
+source ./.venv/bin/activate
+```
+
+## 2. Install
+``` bash
+git clone https://github.com/i4ego/dostool.git 
+cd dostool
+python3 -m pip install -r req.txt
+```
+
+## 3. Build
+``` bash
+python3 -m pip install pyinstaller
+pyinstaller --onefile --console --clean --noconfirm \
+ --distpath ./ --name dostool dostool.py
+rm dostool.spec
+rm -rf build
+```
+
+# Usage
+
+## DoS by TCP 
+``` dostool tcp 192.168.0.1:53 ```
+
+## DoS by UDP
+``` dostool udp 192.168.0.1:53 ```
+
+## DoS domains
+``` dostool tcp example.com:80 ```
+
+## DoS domains (not raw data)
+``` dostool http example.com:80 ```
