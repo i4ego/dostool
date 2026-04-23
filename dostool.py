@@ -16,7 +16,7 @@ Examples:
 \t{sys.argv[0]} tcp example.com:8443
 \t{sys.argv[0]} udp-s 1.1.1.1:53
 """)
-    exit(0)
+    sys.exit(0)
 
 def parse_argv(argv: list) -> tuple[str, list[tuple[str, int]]]:
     if len(argv) <3:
