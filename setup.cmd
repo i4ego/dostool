@@ -1,5 +1,5 @@
 python3 -m venv .venv
-.venv/Scripts/activate.bat
+.venv/Scripts/activate
 
 pip3 install -r req.txt
 pip3 install pyinstaller
