@@ -16,7 +16,7 @@ Usage: {sys.argv[0]} [{", ".join(SUPPORTED_ACTIONS)}] <ip/domain>:<port>
 
 Examples:
 \t{sys.argv[0]} tcp example.com:8443
-\t{sys.argv[0]} udp-s 1.1.1.1:53
+\t{sys.argv[0]} s-udp 1.1.1.1:53
 """)
     sys.exit(0)
 
